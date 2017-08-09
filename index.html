@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Akktis Task</title>
+	<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+</head>
+<style type="text/css">
+	.color {
+		cursor: pointer;
+	}
+</style>
+<body>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-9 col-md-offset-3">
+			<input type="text" name="q" class="search-field col-md-5" placeholder="Search for anything....">
+		</div>
+		<div class="col-md-9 col-md-offset-3">
+			<div class="row results">
+				<div class="col-md-4" row="1">Milan</div>
+				<div class="col-md-4" row="1">Vugrinchev</div>
+				<div class="col-md-4 color" row="1">red</div>
+				<div class="col-md-4" row="2">Milan</div>
+				<div class="col-md-4" row="2">Vugrinchev</div>
+				<div class="col-md-4 color" row="2">yellow</div>
+				<div class="col-md-4" row="3">Milan</div>
+				<div class="col-md-4" row="3">Vugrinchev</div>
+				<div class="col-md-4 color" row="3">cyan</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$(document).on('change', 'input.search-field', function() {
+			var that = this;
+			$.ajax({
+				url: '/search.php',
+				method: 'GET',
+				data: {
+					q: $(that).val(),
+					_: new Date().getTime()
+				},
+				async: false,
+				success: function(response) {
+					$('.results').empty();
+					for(var i = 0; i < response.data.length; i++) {
+						var item = response.data[i];console.log(item);
+						$('.results').append($('<div class="col-md-4" row="' + item.id + '">' + item.firstName + '</div>'));
+						$('.results').append($('<div class="col-md-4" row="' + item.id + '">' + item.lastName + '</div>'));
+						$('.results').append($('<div class="col-md-4 color" row="' + item.id + '">' + item.color + '</div>'));
+					}
+				}
+			});
+		});
+
+		$(document).on('dblclick', 'div.results div.color', function() {
+			$table = $(this).parents('.results');
+			$('div', $table).css({
+				background: 'white'
+			});
+			$('div[row="' + $(this).attr('row') + '"]').css({
+				background: $(this).text()
+			});
+		});
+	});
+</script>
+</body>
+</html>
